@@ -3,25 +3,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/buscarFragment">
+    app:startDestination="@id/nav_buscar">
 
     <fragment
-        android:id="@+id/buscarFragment"
+        android:id="@+id/nav_buscar"
         android:name="com.mushi.mediolimon.BuscarFragment"
         android:label="fragment_buscar"
         tools:layout="@layout/fragment_buscar" />
     <fragment
-        android:id="@+id/guardadasFragment"
+        android:id="@+id/nav_guardadas"
         android:name="com.mushi.mediolimon.GuardadasFragment"
         android:label="fragment_guardadas"
         tools:layout="@layout/fragment_guardadas" />
     <fragment
-        android:id="@+id/compraFragment"
+        android:id="@+id/nav_compra"
         android:name="com.mushi.mediolimon.CompraFragment"
         android:label="fragment_compra"
         tools:layout="@layout/fragment_compra" />
     <fragment
-        android:id="@+id/planificadorFragment"
+        android:id="@+id/nav_planificador"
         android:name="com.mushi.mediolimon.PlanificadorFragment"
         android:label="fragment_planificador"
         tools:layout="@layout/fragment_planificador" />

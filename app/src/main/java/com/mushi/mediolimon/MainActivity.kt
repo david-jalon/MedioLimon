@@ -20,17 +20,16 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        // 1. Encuentra la barra de navegación en el layout
+        // 1. Encuentra la barra de navegación
         val bottomNavView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
 
-        // 2. Encuentra el controlador de navegación (NavController)
-        val navHostFragment = supportFragmentManager
-            .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        // 2. Obtiene el "controlador de navegación" desde el FragmentContainerView
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
 
-        // 3. Conecta la barra de navegación con el controlador
-        // ¡Esta línea hace toda la magia!
+        // 3. Conecta la barra con el controlador. ¡Esta línea hace que todo funcione!
         bottomNavView.setupWithNavController(navController)
+
 
     }
 }
