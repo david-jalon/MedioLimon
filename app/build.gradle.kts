@@ -46,4 +46,13 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    //Fragments
+    implementation(libs.androidx.navigation.fragment.ktx) // Para la navegación con Fragments
+    implementation(libs.androidx.navigation.ui.ktx)
+
+    // Dependencias de test
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
 }

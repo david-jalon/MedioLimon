@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/buscarFragment">
+
+    <fragment
+        android:id="@+id/buscarFragment"
+        android:name="com.mushi.mediolimon.BuscarFragment"
+        android:label="fragment_buscar"
+        tools:layout="@layout/fragment_buscar" />
+    <fragment
+        android:id="@+id/guardadasFragment"
+        android:name="com.mushi.mediolimon.GuardadasFragment"
+        android:label="fragment_guardadas"
+        tools:layout="@layout/fragment_guardadas" />
+    <fragment
+        android:id="@+id/compraFragment"
+        android:name="com.mushi.mediolimon.CompraFragment"
+        android:label="fragment_compra"
+        tools:layout="@layout/fragment_compra" />
+    <fragment
+        android:id="@+id/planificadorFragment"
+        android:name="com.mushi.mediolimon.PlanificadorFragment"
+        android:label="fragment_planificador"
+        tools:layout="@layout/fragment_planificador" />
+</navigation>
