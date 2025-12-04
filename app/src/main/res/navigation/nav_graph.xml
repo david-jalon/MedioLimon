@@ -7,22 +7,22 @@
 
     <fragment
         android:id="@+id/nav_buscar"
-        android:name="com.mushi.mediolimon.BuscarFragment"
+        android:name="com.mushi.mediolimon.buscar.BuscarFragment"
         android:label="fragment_buscar"
         tools:layout="@layout/fragment_buscar" />
     <fragment
         android:id="@+id/nav_guardadas"
-        android:name="com.mushi.mediolimon.GuardadasFragment"
+        android:name="com.mushi.mediolimon.guardadas.GuardadasFragment"
         android:label="fragment_guardadas"
         tools:layout="@layout/fragment_guardadas" />
     <fragment
         android:id="@+id/nav_compra"
-        android:name="com.mushi.mediolimon.CompraFragment"
+        android:name="com.mushi.mediolimon.compra.CompraFragment"
         android:label="fragment_compra"
         tools:layout="@layout/fragment_compra" />
     <fragment
         android:id="@+id/nav_planificador"
-        android:name="com.mushi.mediolimon.PlanificadorFragment"
+        android:name="com.mushi.mediolimon.planificador.PlanificadorFragment"
         android:label="fragment_planificador"
         tools:layout="@layout/fragment_planificador" />
 </navigation>
