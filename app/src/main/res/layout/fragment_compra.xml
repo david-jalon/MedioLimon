@@ -1,14 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".compra.CompraFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <EditText
+        android:id="@+id/etNuevoIngrediente"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Añadir ingrediente"
+        android:layout_toStartOf="@+id/btnAnadir"/>
+
+    <Button
+        android:id="@+id/btnAnadir"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Añadir"
+        android:layout_alignParentEnd="true"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvIngredientes"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Fragment compra" />
+        android:layout_below="@id/etNuevoIngrediente"
+        tools:listitem="@layout/item_ingrediente" />
 
-</FrameLayout>
+</RelativeLayout>

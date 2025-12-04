@@ -5,56 +5,84 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.mushi.mediolimon.R
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+import com.mushi.mediolimon.data.database.entities.Ingrediente
 
 /**
- * A simple [Fragment] subclass.
- * Use the [CompraFragment.newInstance] factory method to
- * create an instance of this fragment.
+ * Fragment que muestra la lista de la compra.
+ *
+ * Permite al usuario ver, añadir, marcar como comprados y eliminar ingredientes.
+ * Este Fragment utiliza un [CompraViewModel] para interactuar con la base de datos y un
+ * [IngredienteAdapter] para mostrar los datos en un [RecyclerView].
  */
 class CompraFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var compraViewModel: CompraViewModel
+    private lateinit var etNuevoIngrediente: EditText
+    private lateinit var btnAnadir: Button
 
+    /**
+     * Infla el layout del Fragment.
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
+        // Infla el layout para este fragment
         return inflater.inflate(R.layout.fragment_compra, container, false)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CompraFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            CompraFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+    /**
+     * Se llama después de que la vista del Fragment haya sido creada.
+     * Aquí es donde se configuran las vistas, el ViewModel, el RecyclerView y los listeners.
+     */
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // Inicializa el ViewModel.
+        compraViewModel = ViewModelProvider(this).get(CompraViewModel::class.java)
+
+        // Obtiene las referencias a las vistas del layout.
+        etNuevoIngrediente = view.findViewById(R.id.etNuevoIngrediente)
+        btnAnadir = view.findViewById(R.id.btnAnadir)
+
+        // Configura el adaptador para el RecyclerView.
+        val adapter = IngredienteAdapter(
+            // Lambda para manejar el clic en un ingrediente (marcar/desmarcar como comprado).
+            onIngredienteClicked = { ingrediente ->
+                val updatedIngrediente = ingrediente.copy(comprado = !ingrediente.comprado)
+                compraViewModel.update(updatedIngrediente)
+            },
+            // Lambda para manejar el clic en el botón de eliminar.
+            onEliminarClicked = { ingrediente ->
+                compraViewModel.delete(ingrediente)
             }
+        )
+
+        // Configura el RecyclerView.
+        val recyclerView = view.findViewById<RecyclerView>(R.id.rvIngredientes)
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        // Observa los cambios en la lista de ingredientes del ViewModel.
+        // Cuando los datos cambian, se actualiza el adaptador.
+        compraViewModel.allIngredientes.observe(viewLifecycleOwner) { ingredientes ->
+            ingredientes?.let { adapter.setIngredientes(it) }
+        }
+
+        // Configura el listener para el botón de añadir un nuevo ingrediente.
+        btnAnadir.setOnClickListener {
+            val nombreIngrediente = etNuevoIngrediente.text.toString()
+            if (nombreIngrediente.isNotBlank()) {
+                val ingrediente = Ingrediente(nombre = nombreIngrediente)
+                compraViewModel.insert(ingrediente)
+                etNuevoIngrediente.text.clear() // Limpia el campo de texto.
+            }
+        }
     }
 }
