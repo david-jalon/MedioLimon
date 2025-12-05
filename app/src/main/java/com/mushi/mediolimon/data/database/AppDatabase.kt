@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.mushi.mediolimon.data.database.dao.IngredienteDao
 import com.mushi.mediolimon.data.database.entities.Ingrediente
 
@@ -13,7 +15,7 @@ import com.mushi.mediolimon.data.database.entities.Ingrediente
  * Esta clase es el punto de acceso a la base de datos de Room
  */
 
-@Database(entities = [Ingrediente::class], version = 1, exportSchema = false)
+@Database(entities = [Ingrediente::class], version = 2, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
     //Metodos para acceder a los DAO
@@ -25,6 +27,13 @@ abstract class AppDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: AppDatabase? = null
 
+        // Definimos la migración de la versión 1 a la 2.
+        val MIGRATION_1_2 = object : Migration(1, 2) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                // Como no hemos cambiado el esquema de la tabla, la migración está vacía.
+            }
+        }
+
         //Metodo para obtener la instancia de la base de datos
         fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
@@ -32,7 +41,9 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "app_database"
-                ).fallbackToDestructiveMigration().build()
+                )
+                .addMigrations(MIGRATION_1_2) // Añadimos el plan de migración.
+                .build()
                 INSTANCE = instance
                 instance
             }

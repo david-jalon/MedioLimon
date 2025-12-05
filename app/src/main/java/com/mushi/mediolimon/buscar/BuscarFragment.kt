@@ -1,60 +1,137 @@
 package com.mushi.mediolimon.buscar
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.mushi.mediolimon.BuildConfig
 import com.mushi.mediolimon.R
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+import com.mushi.mediolimon.api.RetrofitClient
+import com.mushi.mediolimon.buscar.adapter.RecipeAdapter
+import com.mushi.mediolimon.buscar.model.Recipe
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
- * A simple [Fragment] subclass.
- * Use the [BuscarFragment.newInstance] factory method to
- * create an instance of this fragment.
+ * Fragment que muestra una lista de recetas y permite filtrarlas por categoría de dieta.
  */
 class BuscarFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var recipeAdapter: RecipeAdapter
+    private lateinit var recipesRecyclerView: RecyclerView
+    private lateinit var categorySpinner: Spinner
+
+    // Mapa que asocia el nombre de la categoría con el parámetro de la API.
+    private val categories = mapOf(
+        "Todas las Dietas" to null,
+        "Vegana" to "vegan",
+        "Vegetariana" to "vegetarian",
+        "Cetogénica (Keto)" to "ketogenic"
+    )
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
+        // Infla el layout correcto para este fragment.
         return inflater.inflate(R.layout.fragment_buscar, container, false)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment BuscarFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            BuscarFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // Inicialización de las vistas usando la vista del fragment.
+        recipesRecyclerView = view.findViewById(R.id.recipes_recycler_view)
+        categorySpinner = view.findViewById(R.id.category_spinner)
+
+        // Configuración inicial del RecyclerView y el Spinner.
+        setupRecyclerView()
+        setupSpinner()
+
+        // Carga inicial de las recetas sin filtro.
+        fetchRecipes(diet = null, query = "")
+    }
+
+    /**
+     * Configura el RecyclerView con su LayoutManager y el adaptador,
+     * incluyendo el listener para manejar los clics en cada receta.
+     */
+    private fun setupRecyclerView() {
+        recipeAdapter = RecipeAdapter { recipe -> onRecipeClicked(recipe) }
+        recipesRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        recipesRecyclerView.adapter = recipeAdapter
+    }
+
+    /**
+     * Se invoca cuando el usuario hace clic en una receta de la lista.
+     * Abre la [RecipeDetailActivity] pasando los datos necesarios.
+     * @param recipe La receta en la que se hizo clic.
+     */
+    private fun onRecipeClicked(recipe: Recipe) {
+        val intent = Intent(requireContext(), RecipeDetailActivity::class.java).apply {
+            putExtra(RecipeDetailActivity.EXTRA_RECIPE_ID, recipe.id)
+            putExtra(RecipeDetailActivity.EXTRA_RECIPE_IMAGE_URL, recipe.image)
+        }
+        startActivity(intent)
+    }
+
+    /**
+     * Configura el Spinner con las categorías y define su comportamiento.
+     */
+    private fun setupSpinner() {
+        val adapter = ArrayAdapter(
+            requireContext(), // Contexto correcto.
+            android.R.layout.simple_spinner_item,
+            categories.keys.toList()
+        )
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        categorySpinner.adapter = adapter
+
+        categorySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val selectedCategoryName = parent?.getItemAtPosition(position).toString()
+                val dietParameter = categories[selectedCategoryName]
+                fetchRecipes(diet = dietParameter, query = "")
             }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+    }
+
+    /**
+     * Realiza la llamada a la API para buscar recetas.
+     * @param diet El filtro de dieta a aplicar (ej: "vegan").
+     * @param query El texto a buscar (actualmente no se usa).
+     */
+    private fun fetchRecipes(diet: String?, query: String?) {
+        lifecycleScope.launch {
+            try {
+                val response = withContext(Dispatchers.IO) {
+                    RetrofitClient.apiService.searchRecipes(
+                        apiKey = BuildConfig.SPOONACULAR_API_KEY,
+                        query = query,
+                        diet = diet,
+                        type = null
+                    )
+                }
+                recipeAdapter.submitList(response.results)
+
+            } catch (e: Exception) {
+                Log.e("API_CALL", "Error al obtener recetas: ${e.message}", e)
+                Toast.makeText(requireContext(), "Error de red o cuota API agotada.", Toast.LENGTH_LONG).show()
+            }
+        }
     }
 }

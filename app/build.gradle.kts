@@ -1,3 +1,13 @@
+import java.util.Properties
+import java.io.FileInputStream
+
+// 1. Cargar el archivo local.properties
+val properties = Properties()
+properties.load(FileInputStream(rootProject.file("local.properties")))
+
+// 2. Extraer la clave API
+val spoonacularApiKey = properties.getProperty("SPOONACULAR_API_KEY") ?: ""
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -6,9 +16,7 @@ plugins {
 
 android {
     namespace = "com.mushi.mediolimon"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.mushi.mediolimon"
@@ -18,6 +26,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // Esta línea inyecta la clave como una variable String en la clase BuildConfig
+        buildConfigField("String", "SPOONACULAR_API_KEY", "\"$spoonacularApiKey\"")
     }
 
     buildTypes {
@@ -35,6 +46,11 @@ android {
     }
     kotlinOptions {
         jvmTarget = "11"
+    }
+    // Habilita la generación de la clase BuildConfig
+    buildFeatures {
+        buildConfig = true
+        viewBinding = true
     }
 }
 
@@ -65,4 +81,13 @@ dependencies {
 
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+
+    // Retrofit (Cliente HTTP)
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+
+    // Convertidor para transformar JSON a objetos Kotlin/Java
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    // Glide (para cargar imágenes desde URLs)
+    implementation("com.github.bumptech.glide:glide:4.16.0")
 }
