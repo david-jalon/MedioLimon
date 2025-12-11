@@ -1,6 +1,7 @@
 package com.mushi.mediolimon.data.database.entities
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
 /**
@@ -10,7 +11,10 @@ import androidx.room.PrimaryKey
  * @property nombre El nombre del ingrediente (por ejemplo, "Leche", "Huevos").
  * @property comprado Indica si el ingrediente ha sido marcado como comprado.
  */
-@Entity(tableName = "ingredientes")
+@Entity(
+    tableName = "ingredientes",
+    indices = [Index(value = ["nombre"], unique = true)]
+)
 data class Ingrediente (
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,

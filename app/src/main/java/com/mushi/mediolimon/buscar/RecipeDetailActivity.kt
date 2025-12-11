@@ -9,9 +9,14 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.mushi.mediolimon.BuildConfig
 import com.mushi.mediolimon.R
 import com.mushi.mediolimon.api.RetrofitClient
+import com.mushi.mediolimon.buscar.model.ExtendedIngredient
+import com.mushi.mediolimon.data.database.AppDatabase
+import com.mushi.mediolimon.data.database.dao.IngredienteDao
+import com.mushi.mediolimon.data.database.entities.Ingrediente
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -21,6 +26,9 @@ import kotlinx.coroutines.withContext
  * su imagen, título e instrucciones de preparación.
  */
 class RecipeDetailActivity : AppCompatActivity() {
+
+    private lateinit var ingredienteDao: IngredienteDao
+    private var extendedIngredients: List<ExtendedIngredient> = emptyList()
 
     // Objeto compañero para definir constantes públicas.
     companion object {
@@ -33,6 +41,8 @@ class RecipeDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recipe_detail)
+
+        ingredienteDao = AppDatabase.getDatabase(this).IngredienteDao()
 
         // 1. Recuperar los datos pasados desde el Intent.
         val recipeId = intent.getIntExtra(EXTRA_RECIPE_ID, -1)
@@ -57,6 +67,21 @@ class RecipeDetailActivity : AppCompatActivity() {
 
         // 4. Iniciar la obtención de los detalles de la receta desde la API.
         fetchRecipeDetails(recipeId)
+
+        val fab = findViewById<FloatingActionButton>(R.id.add_to_shopping_list_fab)
+        fab.setOnClickListener {
+            if (extendedIngredients.isNotEmpty()) {
+                lifecycleScope.launch {
+                    val ingredientes = extendedIngredients.map { Ingrediente(nombre = it.original) }
+                    withContext(Dispatchers.IO) {
+                        ingredienteDao.insertAll(ingredientes)
+                    }
+                    Toast.makeText(this@RecipeDetailActivity, "Ingredientes añadidos a la lista", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(this@RecipeDetailActivity, "No hay ingredientes para añadir", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     /**
@@ -76,6 +101,8 @@ class RecipeDetailActivity : AppCompatActivity() {
                     )
                 }
 
+                extendedIngredients = response.extendedIngredients
+
                 // Una vez obtenidos los datos, actualizamos la UI en el hilo principal.
                 val titleTextView = findViewById<TextView>(R.id.recipe_title_detail)
                 val ingredientsTextView = findViewById<TextView>(R.id.recipe_ingredients)
@@ -92,10 +119,6 @@ class RecipeDetailActivity : AppCompatActivity() {
                 } else {
                     instructionsTextView.text = "No hay instrucciones disponibles."
                 }
-
-                // El texto de las instrucciones puede contener etiquetas HTML.
-                // Usamos Html.fromHtml para formatearlo correctamente.
-                instructionsTextView.text = Html.fromHtml(response.instructions, Html.FROM_HTML_MODE_COMPACT)
 
             } catch (e: Exception) {
                 // Si algo sale mal (problema de red, API key, etc.), lo capturamos aquí.

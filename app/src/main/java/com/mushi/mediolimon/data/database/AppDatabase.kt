@@ -15,7 +15,7 @@ import com.mushi.mediolimon.data.database.entities.Ingrediente
  * Esta clase es el punto de acceso a la base de datos de Room
  */
 
-@Database(entities = [Ingrediente::class], version = 2, exportSchema = false)
+@Database(entities = [Ingrediente::class], version = 3, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
     //Metodos para acceder a los DAO
@@ -27,10 +27,17 @@ abstract class AppDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: AppDatabase? = null
 
-        // Definimos la migración de la versión 1 a la 2.
+        // Migración de la versión 1 a la 2 (vacía).
         val MIGRATION_1_2 = object : Migration(1, 2) {
             override fun migrate(database: SupportSQLiteDatabase) {
-                // Como no hemos cambiado el esquema de la tabla, la migración está vacía.
+                // No hubo cambios de esquema en esta versión.
+            }
+        }
+
+        // Migración de la versión 2 a la 3: añade un índice único a la tabla 'ingredientes'.
+        val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("CREATE UNIQUE INDEX index_ingredientes_nombre ON ingredientes(nombre)")
             }
         }
 
@@ -42,7 +49,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "app_database"
                 )
-                .addMigrations(MIGRATION_1_2) // Añadimos el plan de migración.
+                .addMigrations(MIGRATION_1_2, MIGRATION_2_3) // Añadimos los planes de migración.
                 .build()
                 INSTANCE = instance
                 instance

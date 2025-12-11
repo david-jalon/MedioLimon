@@ -37,6 +37,15 @@ interface IngredienteDao {
     suspend fun insert(ingrediente: Ingrediente)
 
     /**
+     * Inserta una lista de ingredientes en la base de datos.
+     * Si alguno de los ingredientes ya existe, se ignora.
+     *
+     * @param ingredientes La lista de [Ingrediente] a insertar.
+     */
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertAll(ingredientes: List<Ingrediente>)
+
+    /**
      * Actualiza un ingrediente existente en la base de datos.
      *
      * @param ingrediente El [Ingrediente] a actualizar.
