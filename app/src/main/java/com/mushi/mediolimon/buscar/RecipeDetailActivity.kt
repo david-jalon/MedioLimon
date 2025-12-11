@@ -9,7 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
-import com.mushi.mediolimon.BuildConfig // Importación añadida
+import com.mushi.mediolimon.BuildConfig
 import com.mushi.mediolimon.R
 import com.mushi.mediolimon.api.RetrofitClient
 import kotlinx.coroutines.Dispatchers
@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * Actividad que muestra los detalles de una receta específica, incluyendo
+ * Activity que muestra los detalles de una receta específica, incluyendo
  * su imagen, título e instrucciones de preparación.
  */
 class RecipeDetailActivity : AppCompatActivity() {
@@ -78,9 +78,20 @@ class RecipeDetailActivity : AppCompatActivity() {
 
                 // Una vez obtenidos los datos, actualizamos la UI en el hilo principal.
                 val titleTextView = findViewById<TextView>(R.id.recipe_title_detail)
+                val ingredientsTextView = findViewById<TextView>(R.id.recipe_ingredients)
                 val instructionsTextView = findViewById<TextView>(R.id.recipe_instructions)
 
                 titleTextView.text = response.title
+
+                // Concatenamos los ingredientes en un solo texto.
+                val ingredientsText = response.extendedIngredients.joinToString("\n") { "- ${it.original}" }
+                ingredientsTextView.text = ingredientsText
+
+                if (response.instructions != null) {
+                    instructionsTextView.text = Html.fromHtml(response.instructions, Html.FROM_HTML_MODE_COMPACT)
+                } else {
+                    instructionsTextView.text = "No hay instrucciones disponibles."
+                }
 
                 // El texto de las instrucciones puede contener etiquetas HTML.
                 // Usamos Html.fromHtml para formatearlo correctamente.

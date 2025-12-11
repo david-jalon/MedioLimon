@@ -26,7 +26,7 @@ interface SpoonacularApiService {
         @Query("query") query: String?,
         @Query("diet") diet: String?,
         @Query("type") type: String?,
-        @Query("number") number: Int = 10
+        @Query("number") number: Int = 1 // VALOR TEMPORAL A 1 PARA NO GASTAR EL TOKEN DE LA API
     ): RecipeResponse
 
     /**

@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
 
-        // 3. Conecta la barra con el controlador. ¡Esta línea hace que todo funcione!
+        // 3. Conecta la barra con el controlador.
         bottomNavView.setupWithNavController(navController)
 
 

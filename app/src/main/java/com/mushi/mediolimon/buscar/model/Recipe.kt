@@ -27,11 +27,23 @@ data class RecipeResponse(
 )
 
 /**
+ * Representa un ingrediente con su información detallada.
+ * GSON mapeará los datos de "extendedIngredients" a objetos de esta clase.
+ */
+data class ExtendedIngredient(
+    val id: Int,             // Identificador único del ingrediente.
+    val name: String,        // Nombre limpio del ingrediente (ej: "flour").
+    val original: String     // La descripción original completa (ej: "2 cups all-purpose flour").
+)
+
+/**
  * Representa los detalles de una receta específica obtenidos del endpoint de información.
  */
 data class RecipeDetail(
     val id: Int,         // Identificador único de la receta.
     val title: String,   // Título de la receta.
     // Las instrucciones de preparación. Pueden contener formato HTML.
-    val instructions: String
+    val instructions: String,
+    // La lista de ingredientes necesarios para la receta.
+    val extendedIngredients: List<ExtendedIngredient> // Lista de ingredientes.
 )
