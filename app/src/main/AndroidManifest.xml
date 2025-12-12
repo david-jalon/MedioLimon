@@ -26,6 +26,10 @@
         <activity
             android:name=".buscar.RecipeDetailActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".guardadas.RecetaGuardadaDetailActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

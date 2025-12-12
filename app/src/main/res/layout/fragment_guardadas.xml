@@ -5,10 +5,10 @@
     android:layout_height="match_parent"
     tools:context=".guardadas.GuardadasFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_guardadas"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Fragment Guardadas" />
+        tools:listitem="@layout/item_receta_guardada" />
 
 </FrameLayout>
