@@ -2,6 +2,7 @@ package com.mushi.mediolimon.api
 
 import com.mushi.mediolimon.buscar.model.RecipeDetail
 import com.mushi.mediolimon.buscar.model.RecipeResponse
+import com.mushi.mediolimon.planificador.model.MealPlan
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -40,4 +41,20 @@ interface SpoonacularApiService {
         @Path("id") id: Int,
         @Query("apiKey") apiKey: String
     ): RecipeDetail
+
+    /**
+     * Genera un plan de comidas para una semana.
+     * @param apiKey La clave de la API para autenticar la solicitud.
+     * @param timeFrame El período de tiempo, que puede ser "day" (día) o "week" (semana).
+     * @param targetCalories El objetivo de calorías diarias.
+     * @param diet La dieta a seguir (ej: "vegetarian").
+     * @return Un objeto [MealPlan] con el plan de comidas para la semana.
+     */
+    @GET("mealplanner/generate")
+    suspend fun generateMealPlan(
+        @Query("apiKey") apiKey: String,
+        @Query("timeFrame") timeFrame: String = "week",
+        @Query("targetCalories") targetCalories: Int?,
+        @Query("diet") diet: String?
+    ): MealPlan
 }

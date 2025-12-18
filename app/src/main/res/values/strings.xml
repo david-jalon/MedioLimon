@@ -2,4 +2,5 @@
     <string name="app_name">MedioLimon</string>
     <string name="recipe_image_desc">Imagen de la receta</string>
     <string name="delete_recipe">Eliminar receta</string>
+    <string name="generar_nuevo_plan_de_comidas">Generar nuevo plan de comidas</string>
 </resources>
