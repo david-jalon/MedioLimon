@@ -12,6 +12,13 @@ data class Recipe(
 )
 
 /**
+ * Representa la respuesta de la API para la búsqueda de recetas aleatorias.
+ */
+data class RandomRecipesResponse(
+    val recipes: List<Recipe>
+)
+
+/**
  * Representa la respuesta completa de la API cuando se busca una lista de recetas.
  * La librería GSON se encarga de mapear el JSON a esta estructura.
  */
