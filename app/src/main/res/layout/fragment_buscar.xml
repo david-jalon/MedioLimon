@@ -67,10 +67,10 @@
     <!-- Botón flotante extendido para la generación con IA -->
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/fab_ai"
-        android:layout_width="wrap_content"
+        android:layout_width="60dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="26dp"
         android:contentDescription="@string/generar_receta_con_ia"
         android:text="AI"
         app:layout_constraintBottom_toBottomOf="parent"

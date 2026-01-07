@@ -28,7 +28,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/bottom_nav_menu" /> <!-- ¡Importante! Conecta con tu menú -->
+        app:menu="@menu/bottom_nav_menu"
+        app:backgroundTint="@color/surface" /> <!-- ¡Color de fondo añadido! -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-    
