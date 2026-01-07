@@ -3,10 +3,14 @@ import java.io.FileInputStream
 
 // 1. Cargar el archivo local.properties
 val properties = Properties()
-properties.load(FileInputStream(rootProject.file("local.properties")))
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    properties.load(FileInputStream(localPropertiesFile))
+}
 
-// 2. Extraer la clave API
+// 2. Extraer las claves API
 val spoonacularApiKey = properties.getProperty("SPOONACULAR_API_KEY") ?: ""
+val geminiApiKey = properties.getProperty("GEMINI_API_KEY") ?: ""
 
 plugins {
     alias(libs.plugins.android.application)
@@ -27,8 +31,9 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        // Esta línea inyecta la clave como una variable String en la clase BuildConfig
+        // Inyecta las claves como variables String en la clase BuildConfig
         buildConfigField("String", "SPOONACULAR_API_KEY", "\"$spoonacularApiKey\"")
+        buildConfigField("String", "GEMINI_API_KEY", "\"$geminiApiKey\"")
     }
 
     buildTypes {
@@ -90,4 +95,7 @@ dependencies {
 
     // Glide (para cargar imágenes desde URLs)
     implementation("com.github.bumptech.glide:glide:4.16.0")
+
+    // SDK de IA de Google (Gemini) - Usando una versión anterior para probar compatibilidad.
+    implementation("com.google.ai.client.generativeai:generativeai:0.5.0")
 }

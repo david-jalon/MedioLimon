@@ -14,13 +14,19 @@ import com.mushi.mediolimon.planificador.model.MealPlan
 import java.util.Locale
 
 /**
- * Fragment que muestra un plan de comidas semanal y permite generar uno nuevo.
+ * Fragment que actúa como la vista para la funcionalidad del Planificador de Comidas.
+ * Su responsabilidad es mostrar el plan de comidas y delegar las acciones del usuario (como refrescar el plan)
+ * al [MealPlanViewModel].
  */
 class PlanificadorFragment : Fragment() {
 
+    // Backing property para el ViewBinding. Se usa para evitar fugas de memoria.
     private var _binding: FragmentPlanificadorBinding? = null
+    // Propiedad de solo lectura para acceder al binding de forma segura.
     private val binding get() = _binding!!
 
+    // Inicializa el ViewModel usando la delegación de KTX `viewModels`.
+    // Esto asegura que el ViewModel sobrevive a cambios de configuración.
     private val viewModel: MealPlanViewModel by viewModels()
 
     override fun onCreateView(
@@ -34,36 +40,46 @@ class PlanificadorFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Configura el listener del botón flotante para generar un nuevo plan.
-        binding.fabRefresh.setOnClickListener {
-            generateNewMealPlan()
-        }
-
-        // Configura los observadores de los LiveData.
+        setupListeners()
         setupObservers()
 
-        // Si no hay un plan de comidas cargado, genera uno inicial.
+        // Si no hay un plan de comidas cargado (ej: la primera vez que se abre la app),
+        // se solicita uno nuevo para que la pantalla no aparezca vacía.
         if (viewModel.mealPlan.value == null) {
             generateNewMealPlan()
         }
     }
 
     /**
-     * Configura los observadores para la UI (estado de carga y datos del plan).
+     * Configura los listeners para los elementos interactivos de la UI.
+     */
+    private fun setupListeners() {
+        // Asigna la acción de generar un nuevo plan al botón flotante.
+        binding.fabRefresh.setOnClickListener {
+            generateNewMealPlan()
+        }
+    }
+
+    /**
+     * Configura los observadores para los LiveData del ViewModel.
+     * La UI reacciona a los cambios en los datos, pero no los modifica directamente.
      */
     private fun setupObservers() {
+        // Observa el estado de carga. Muestra u oculta la barra de progreso central.
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBar.isVisible = isLoading
-            // Desactiva el botón mientras se está cargando para evitar clics múltiples.
+            // Para una mejor experiencia, se desactiva el botón de refrescar mientras ya se está cargando.
             binding.fabRefresh.isEnabled = !isLoading
         }
 
+        // Observa los datos del plan de comidas.
         viewModel.mealPlan.observe(viewLifecycleOwner) { mealPlan ->
             if (mealPlan != null) {
-                // Formatea y muestra el plan de comidas.
+                // Si el plan no es nulo, se formatea y se muestra en el TextView.
                 binding.tvMealPlan.text = formatMealPlan(mealPlan)
             } else {
-                // Muestra un error si el plan es nulo y no se está cargando.
+                // Si el plan es nulo, puede ser porque la carga inicial aún no ha terminado
+                // o porque ha ocurrido un error. Se muestra un Toast solo si no se está cargando.
                 viewModel.isLoading.value?.let { isLoading ->
                     if (!isLoading) {
                         Toast.makeText(context, "Error al generar el plan de comidas", Toast.LENGTH_SHORT).show()
@@ -74,33 +90,40 @@ class PlanificadorFragment : Fragment() {
     }
 
     /**
-     * Llama al ViewModel para solicitar un nuevo plan de comidas a la API.
+     * Función de ayuda que centraliza la llamada al ViewModel para generar un nuevo plan.
      */
     private fun generateNewMealPlan() {
         viewModel.generateMealPlan(
             apiKey = BuildConfig.SPOONACULAR_API_KEY,
-            targetCalories = 2000,
-            diet = "vegetarian"
+            targetCalories = 2000, // Se puede cambiar o hacer configurable por el usuario.
+            diet = "vegetarian"      // Se puede cambiar o hacer configurable por el usuario.
         )
     }
 
     /**
-     * Convierte el objeto MealPlan en un String formateado y legible.
+     * Convierte el objeto MealPlan en un String formateado y legible para ser mostrado en un TextView.
+     * En una app más compleja, esto se podría reemplazar por un RecyclerView con diferentes vistas.
+     * @param mealPlan El objeto de datos que contiene el plan semanal.
+     * @return Un String con todo el plan formateado.
      */
     private fun formatMealPlan(mealPlan: MealPlan): String {
         val formattedPlan = StringBuilder()
-        // Define el orden de los días para una presentación consistente.
+        // Se define una lista explícita con el orden de los días para asegurar una presentación consistente.
         val daysOfWeek = listOf("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday")
 
         daysOfWeek.forEach { day ->
+            // Busca el plan para el día actual en el mapa de la API.
             mealPlan.week[day]?.let { dayPlan ->
+                // Capitaliza la primera letra del día para una mejor presentación.
                 formattedPlan.append(day.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }).append("\n")
                 formattedPlan.append("---------------------\n")
 
+                // Itera sobre cada comida del día.
                 dayPlan.meals.forEach { meal ->
                     formattedPlan.append("  • ${meal.title} (${meal.readyInMinutes} min)\n")
                 }
 
+                // Añade el total de calorías del día.
                 val nutrients = dayPlan.nutrients
                 formattedPlan.append("  Total: ${nutrients.calories.toInt()} kcal\n\n")
             }
@@ -108,6 +131,10 @@ class PlanificadorFragment : Fragment() {
         return formattedPlan.toString()
     }
 
+    /**
+     * Se llama cuando la vista del fragment va a ser destruida.
+     * Es fundamental limpiar la referencia al binding para evitar fugas de memoria (memory leaks).
+     */
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
