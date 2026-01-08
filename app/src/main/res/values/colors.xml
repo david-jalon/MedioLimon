@@ -5,7 +5,8 @@
     <color name="secondary">#FFC107</color> <!-- Amarillo claro -->
     <color name="surface">#FFFFFF</color> <!-- Blanco -->
     <color name="onSurface">#2E2E2E</color> <!-- Gris oscuro -->
-    <color name="onPrimary">#FFFFFF</color> <!-- Blanco -->
-    <color name="onSecondary">#FFFFFF</color> <!-- Blanco -->
+    <color name="onPrimary">#FFFFFF</color> <!--  -->
+    <color name="onSecondary">#FFFFFF</color> <!--  -->
+    <color name="onBackground">#FBE29A</color> <!--  -->
 </resources>
 

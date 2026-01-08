@@ -3,28 +3,49 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".compra.CompraFragment">
 
-    <EditText
-        android:id="@+id/etNuevoIngrediente"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cvAddIngredients"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Add ingredient"
+        app:cardCornerRadius="16dp"
+        app:cardBackgroundColor="@color/onBackground"
+        android:layout_margin="6dp"
+        >
 
-        android:layout_toStartOf="@+id/btnAnadir"/>
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/btnAnadir"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add"
-        android:layout_alignParentEnd="true"/>
+            <EditText
+                android:id="@+id/etNuevoIngrediente"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:hint="Add an ingredient"
+                android:layout_margin="6dp"
+                android:padding="8dp"
+                android:background="@color/onBackground"
+                android:layout_toStartOf="@+id/btnAnadir"/>
+
+            <Button
+                android:id="@+id/btnAnadir"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add"
+                android:layout_margin="6dp"
+                />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.cardview.widget.CardView>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvIngredientes"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/etNuevoIngrediente"
+        android:layout_below="@id/cvAddIngredients"
         tools:listitem="@layout/item_ingrediente" />
 
 </RelativeLayout>
