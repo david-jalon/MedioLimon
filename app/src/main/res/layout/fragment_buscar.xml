@@ -16,6 +16,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:hint="Write an ingredient"
+        app:boxBackgroundColor="@color/onBackground"
         app:layout_constraintEnd_toStartOf="@+id/btn_search"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -24,7 +25,7 @@
             android:id="@+id/et_ingredient"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:imeOptions="actionSearch" 
+            android:imeOptions="actionSearch"
             android:inputType="text" />
 
     </com.google.android.material.textfield.TextInputLayout>
