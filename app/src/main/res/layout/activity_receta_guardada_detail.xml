@@ -35,13 +35,13 @@
                     android:layout_marginBottom="16dp"
                     android:textSize="24sp"
                     android:textStyle="bold"
-                    tools:text="Nombre de la Receta" />
+                    tools:text="Recipe's Name" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:text="Ingredientes"
+                    android:text="Ingredients"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -58,7 +58,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:text="Instrucciones"
+                    android:text="Instructions"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -82,7 +82,7 @@
         android:layout_margin="16dp"
         android:clickable="true"
         android:focusable="true"
-        android:contentDescription="Añadir ingredientes a la lista de la compra"
+        android:contentDescription="Add ingredients to shopping list"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_shopping_cart" />

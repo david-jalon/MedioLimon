@@ -35,13 +35,13 @@
                     android:layout_marginBottom="16dp"
                     android:textSize="24sp"
                     android:textStyle="bold"
-                    tools:text="Nombre de la Receta" />
+                    tools:text="Recipe's Name" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:text="Ingredientes"
+                    android:text="Ingredients"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -58,7 +58,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:text="Instrucciones"
+                    android:text="Instructions"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -94,7 +94,7 @@
         android:layout_marginTop="150dp"
         android:layout_marginRight="16dp"
         android:clickable="true"
-        android:contentDescription="Añadir receta a favoritos"
+        android:contentDescription="Add to favorites"
         android:focusable="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

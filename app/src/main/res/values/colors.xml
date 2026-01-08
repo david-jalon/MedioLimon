@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Paleta de Colores Principal -->
-    <color name="primary">#4CAF50</color> <!-- Un verde fresco, ideal para barras de acción y acentos principales. -->
-    <color name="secondary">#FFC107</color> <!-- Un verde lima, perfecto para botones flotantes y otros controles. -->
-    <color name="surface">#FFFFFF</color> <!-- Un fondo casi blanco, pero más suave a la vista. -->
-    <color name="onSurface">#2E2E2E</color> <!-- Un gris muy oscuro para el texto principal, mejor que el negro puro. -->
-    <color name="onPrimary">#FFFFFF</color> <!-- Color para el texto y los iconos que van sobre el color primario (blanco). -->
-    <color name="onSecondary">#FFFFFF</color> <!-- Color para el texto y los iconos que van sobre el color secundario (negro). -->
+    <color name="primary">#4CAF50</color> <!-- Verde claro -->
+    <color name="secondary">#FFC107</color> <!-- Amarillo claro -->
+    <color name="surface">#FFFFFF</color> <!-- Blanco -->
+    <color name="onSurface">#2E2E2E</color> <!-- Gris oscuro -->
+    <color name="onPrimary">#FFFFFF</color> <!-- Blanco -->
+    <color name="onSecondary">#FFFFFF</color> <!-- Blanco -->
 </resources>
 

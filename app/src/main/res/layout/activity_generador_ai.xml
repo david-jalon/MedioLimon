@@ -22,7 +22,7 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Ingrediente 1 (ej: pollo)">
+            android:hint="Ingredient 1 (ex: chicken)">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_ingredients_ai_1"
@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:visibility="gone"
-            android:hint="Ingrediente 2"
+            android:hint="Ingredient 2"
             tools:visibility="visible">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -53,7 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:visibility="gone"
-            android:hint="Ingrediente 3"
+            android:hint="Ingredient 3"
             tools:visibility="visible">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -69,7 +69,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:visibility="gone"
-            android:hint="Ingrediente 4"
+            android:hint="Ingredient 4"
             tools:visibility="visible">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -85,7 +85,7 @@
         style="@style/Widget.Material3.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="+ Añadir ingrediente"
+        android:text="+ Add ingredient"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ll_ingredients_container" />
 
@@ -94,7 +94,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Generar Receta"
+        android:text="Generate Recipe"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_add_ingredient" />
