@@ -31,7 +31,6 @@
             android:name=".guardadas.RecetaGuardadaDetailActivity"
             android:exported="false" />
 
-        <!-- Declaración de la nueva Activity para el generador de IA -->
         <activity
             android:name=".ia.GeneradorAiActivity"
             android:exported="false" />

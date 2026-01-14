@@ -11,13 +11,6 @@ import com.mushi.mediolimon.data.database.entities.Ingrediente
 
 /**
  * Adaptador para el [RecyclerView] que muestra la lista de ingredientes.
- *
- * Se encarga de vincular los datos de la lista de [Ingrediente] con las vistas de cada elemento
- * en el RecyclerView (`item_ingrediente.xml`). También maneja las interacciones del usuario,
- * como marcar un ingrediente como comprado o eliminarlo.
- *
- * @param onIngredienteClicked Una función lambda que se invoca cuando se hace clic en el CheckBox de un ingrediente.
- * @param onEliminarClicked Una función lambda que se invoca cuando se hace clic en el botón de eliminar de un ingrediente.
  */
 class IngredienteAdapter(
     private val onIngredienteClicked: (Ingrediente) -> Unit,
@@ -25,22 +18,20 @@ class IngredienteAdapter(
 ) : RecyclerView.Adapter<IngredienteAdapter.IngredienteViewHolder>() {
 
     private var ingredientes = emptyList<Ingrediente>()
+    private var isModoEdicion = false // Flag para controlar la visibilidad de los botones de eliminar.
 
-    /**
-     * Crea y devuelve un [IngredienteViewHolder] inflando el layout del elemento.
-     */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IngredienteViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_ingrediente, parent, false)
         return IngredienteViewHolder(itemView)
     }
 
-    /**
-     * Vincula los datos de un [Ingrediente] específico con un [IngredienteViewHolder].
-     */
     override fun onBindViewHolder(holder: IngredienteViewHolder, position: Int) {
         val currentIngrediente = ingredientes[position]
         holder.cbIngrediente.text = currentIngrediente.nombre
         holder.cbIngrediente.isChecked = currentIngrediente.comprado
+
+        // Muestra u oculta el botón de eliminar según el modo de edición.
+        holder.btnEliminar.visibility = if (isModoEdicion) View.VISIBLE else View.GONE
 
         holder.cbIngrediente.setOnClickListener {
             onIngredienteClicked(currentIngrediente)
@@ -51,15 +42,10 @@ class IngredienteAdapter(
         }
     }
 
-    /**
-     * Devuelve el número total de ingredientes en la lista.
-     */
     override fun getItemCount() = ingredientes.size
 
     /**
-     * Actualiza la lista de ingredientes del adaptador y notifica al RecyclerView para que se redibuje.
-     *
-     * @param ingredientes La nueva lista de [Ingrediente] a mostrar.
+     * Actualiza la lista de ingredientes del adaptador.
      */
     internal fun setIngredientes(ingredientes: List<Ingrediente>) {
         this.ingredientes = ingredientes
@@ -67,8 +53,15 @@ class IngredienteAdapter(
     }
 
     /**
-     * ViewHolder para un elemento de la lista de ingredientes. Mantiene las referencias a las vistas
-     * de la UI para un solo elemento (un CheckBox y un botón de eliminar).
+     * Activa o desactiva el modo de edición, que muestra los botones de eliminar.
+     */
+    fun setModoEdicion(activado: Boolean) {
+        isModoEdicion = activado
+        notifyDataSetChanged() // Notifica para que el RecyclerView se redibuje y muestre/oculte los botones.
+    }
+
+    /**
+     * ViewHolder para un elemento de la lista de ingredientes.
      */
     class IngredienteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val cbIngrediente: CheckBox = itemView.findViewById(R.id.cbIngrediente)

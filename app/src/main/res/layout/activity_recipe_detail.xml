@@ -8,7 +8,9 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="33dp"
+        tools:layout_editor_absoluteY="0dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -19,8 +21,8 @@
                 android:id="@+id/recipe_image_detail"
                 android:layout_width="match_parent"
                 android:layout_height="220dp"
-                android:scaleType="centerCrop"
-                android:contentDescription="@string/recipe_image_desc" />
+                android:contentDescription="@string/recipe_image_desc"
+                android:scaleType="centerCrop" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -50,8 +52,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
-                    android:textSize="16sp"
                     android:lineSpacingExtra="4dp"
+                    android:textSize="16sp"
                     tools:text="- 2 tazas de harina\n- 1 taza de azúcar\n- 3 huevos" />
 
                 <TextView
@@ -66,8 +68,8 @@
                     android:id="@+id/recipe_instructions"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="16sp"
                     android:lineSpacingExtra="4dp"
+                    android:textSize="16sp"
                     tools:text="Aquí irán las instrucciones paso a paso" />
 
             </LinearLayout>

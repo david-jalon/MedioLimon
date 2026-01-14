@@ -5,84 +5,75 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.mushi.mediolimon.R
 import com.mushi.mediolimon.data.database.entities.Ingrediente
+import com.mushi.mediolimon.databinding.FragmentCompraBinding
 
 /**
  * Fragment que muestra la lista de la compra.
- *
- * Permite al usuario ver, añadir, marcar como comprados y eliminar ingredientes.
- * Este Fragment utiliza un [CompraViewModel] para interactuar con la base de datos y un
- * [IngredienteAdapter] para mostrar los datos en un [RecyclerView].
+ * Utiliza ViewBinding y un ViewModel para una arquitectura moderna y robusta.
  */
 class CompraFragment : Fragment() {
 
-    private lateinit var compraViewModel: CompraViewModel
-    private lateinit var etNuevoIngrediente: EditText
-    private lateinit var btnAnadir: Button
+    // Usando la delegación de KTX `viewModels` para obtener el ViewModel.
+    private val compraViewModel: CompraViewModel by viewModels()
+    
+    // ViewBinding para acceder a las vistas de forma segura y concisa.
+    private var _binding: FragmentCompraBinding? = null
+    private val binding get() = _binding!!
 
-    /**
-     * Infla el layout del Fragment.
-     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Infla el layout para este fragment
-        return inflater.inflate(R.layout.fragment_compra, container, false)
+    ): View {
+        _binding = FragmentCompraBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    /**
-     * Se llama después de que la vista del Fragment haya sido creada.
-     * Aquí es donde se configuran las vistas, el ViewModel, el RecyclerView y los listeners.
-     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Inicializa el ViewModel.
-        compraViewModel = ViewModelProvider(this).get(CompraViewModel::class.java)
-
-        // Obtiene las referencias a las vistas del layout.
-        etNuevoIngrediente = view.findViewById(R.id.etNuevoIngrediente)
-        btnAnadir = view.findViewById(R.id.btnAnadir)
-
         // Configura el adaptador para el RecyclerView.
         val adapter = IngredienteAdapter(
-            // Lambda para manejar el clic en un ingrediente (marcar/desmarcar como comprado).
             onIngredienteClicked = { ingrediente ->
                 val updatedIngrediente = ingrediente.copy(comprado = !ingrediente.comprado)
                 compraViewModel.update(updatedIngrediente)
             },
-            // Lambda para manejar el clic en el botón de eliminar.
             onEliminarClicked = { ingrediente ->
                 compraViewModel.delete(ingrediente)
             }
         )
 
-        // Configura el RecyclerView.
-        val recyclerView = view.findViewById<RecyclerView>(R.id.rvIngredientes)
-        recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        // Configura el RecyclerView usando el ViewBinding.
+        binding.rvIngredientes.adapter = adapter
+        binding.rvIngredientes.layoutManager = LinearLayoutManager(requireContext())
 
-        // Observa los cambios en la lista de ingredientes del ViewModel.
-        // Cuando los datos cambian, se actualiza el adaptador.
+        // Observa los cambios en la lista de ingredientes.
         compraViewModel.allIngredientes.observe(viewLifecycleOwner) { ingredientes ->
-            ingredientes?.let { adapter.setIngredientes(it) }
+            ingredientes?.let { 
+                adapter.setIngredientes(it)
+                // ¡SOLUCIÓN! Activa el modo edición para mostrar los botones de eliminar.
+                adapter.setModoEdicion(true)
+            }
         }
 
-        // Configura el listener para el botón de añadir un nuevo ingrediente.
-        btnAnadir.setOnClickListener {
-            val nombreIngrediente = etNuevoIngrediente.text.toString()
+        // Configura el listener del botón de añadir.
+        binding.btnAnadir.setOnClickListener {
+            val nombreIngrediente = binding.etNuevoIngrediente.text.toString()
             if (nombreIngrediente.isNotBlank()) {
                 val ingrediente = Ingrediente(nombre = nombreIngrediente)
                 compraViewModel.insert(ingrediente)
-                etNuevoIngrediente.text.clear() // Limpia el campo de texto.
+                binding.etNuevoIngrediente.text.clear()
             }
         }
+    }
+
+    /**
+     * Limpia la referencia al binding para evitar fugas de memoria.
+     */
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
