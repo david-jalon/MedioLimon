@@ -54,7 +54,7 @@ class GeneradorAiActivity : AppCompatActivity() {
 
     private fun setupActionBar() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "Generador de Recetas con IA"
+        supportActionBar?.title = "AI Recipe Generator"
     }
 
     private fun setupListeners() {
@@ -64,7 +64,7 @@ class GeneradorAiActivity : AppCompatActivity() {
                 hideKeyboard()
                 generateRecipe(ingredients)
             } else {
-                Toast.makeText(this, "Por favor, introduce al menos un ingrediente", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please enter at least one ingredient", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -97,10 +97,10 @@ class GeneradorAiActivity : AppCompatActivity() {
                     apiKey = BuildConfig.GEMINI_API_KEY
                 )
 
-                // Prompt mejorado para ser más restrictivo con los ingredientes.
-                val prompt = "Crea una receta de cocina que utilice únicamente los siguientes ingredientes: $ingredients. " +
-                             "Puedes añadir únicamente ingredientes básicos y comunes como aceite, sal, pimienta, especias y agua si son estrictamente necesarios. " +
-                             "La receta debe tener un título claro, una lista de ingredientes final y los pasos de preparación bien detallados."
+                // English prompt for the AI model.
+                val prompt = "Create a recipe that uses only the following ingredients: $ingredients. " +
+                             "You can only add basic and common ingredients like oil, salt, pepper, spices, and water if they are strictly necessary. " +
+                             "The recipe must have a clear title, a final list of ingredients, and well-detailed preparation steps."
 
                 val response = generativeModel.generateContent(prompt)
                 
@@ -109,8 +109,8 @@ class GeneradorAiActivity : AppCompatActivity() {
 
             } catch (e: Exception) {
                 e.printStackTrace()
-                Toast.makeText(this@GeneradorAiActivity, "Error al generar la receta: ${e.message}", Toast.LENGTH_LONG).show()
-                binding.tvGeneratedRecipe.text = "No se pudo generar la receta. Revisa la clave de API y la conexión."
+                Toast.makeText(this@GeneradorAiActivity, "Error generating recipe: ${e.message}", Toast.LENGTH_LONG).show()
+                binding.tvGeneratedRecipe.text = "Could not generate recipe. Check the API key and your connection."
             }
             setLoadingState(false)
         }
@@ -127,7 +127,7 @@ class GeneradorAiActivity : AppCompatActivity() {
             ?.replace("#", "")    // Elimina los marcadores de encabezado H1
             ?.replace("**", "")   // Elimina los marcadores de negrita
             ?.replace("* ", "• ") // Reemplaza los asteriscos de las listas por un punto
-            ?.trim() ?: "No se pudo generar la receta. Inténtalo de nuevo."
+            ?.trim() ?: "Could not generate recipe. Please try again."
     }
 
     private fun setLoadingState(isLoading: Boolean) {
