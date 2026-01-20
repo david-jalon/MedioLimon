@@ -42,7 +42,7 @@ data class Meal(
     /**
      * Función de utilidad para construir la URL completa de la imagen de la receta.
      * La API de Spoonacular a menudo proporciona solo el ID y el formato de la imagen por separado.
-     * Este método los combina para formar una URL válida y con un tamaño específico (556x370).
+     * Este metodo los combina para formar una URL válida y con un tamaño específico (556x370).
      * @return La URL completa de la imagen.
      */
     fun getImageUrl(): String {
