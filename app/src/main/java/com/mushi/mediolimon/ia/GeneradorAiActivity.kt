@@ -99,11 +99,11 @@ class GeneradorAiActivity : AppCompatActivity() {
 
                 // English prompt for the AI model.
                 val prompt = "Create a recipe that uses only the following ingredients: $ingredients. " +
-                             "You can only add basic and common ingredients like oil, salt, pepper, spices, and water if they are strictly necessary. " +
-                             "The recipe must have a clear title, a final list of ingredients, and well-detailed preparation steps."
+                        "You can only add basic and common ingredients like oil, salt, pepper, spices, and water if they are strictly necessary. " +
+                        "The recipe must have a clear title, a final list of ingredients, and well-detailed preparation steps."
 
                 val response = generativeModel.generateContent(prompt)
-                
+
                 // Formatea la respuesta para eliminar caracteres de Markdown antes de mostrarla.
                 binding.tvGeneratedRecipe.text = formatGeminiResponse(response.text)
 

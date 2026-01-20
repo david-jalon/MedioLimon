@@ -106,15 +106,18 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:backgroundTint="@color/primary"
         app:layout_constraintTop_toBottomOf="@+id/btn_generate_ai">
 
-        <TextView
-            android:id="@+id/tv_generated_recipe"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:lineSpacingMultiplier="1.2"
-            android:textSize="16sp"
-            tools:text="Aquí aparecerá la receta generada por la IA..." />
+            <TextView
+                android:id="@+id/tv_generated_recipe"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lineSpacingMultiplier="1.2"
+                android:layout_marginBottom="16dp"
+                android:lineSpacingExtra="4dp"
+                android:textSize="16sp"
+                tools:text="Aquí aparecerá la receta generada por la IA..." />
 
     </ScrollView>
 
