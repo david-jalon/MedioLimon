@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -38,14 +37,12 @@ class PlanificadorFragment : Fragment() {
         setupListeners()
         setupObservers()
 
+        // Si no hay un plan de comidas, se genera uno nuevo
         if (viewModel.mealPlan.value == null) {
             generateNewMealPlan()
         }
     }
 
-    /**
-     * Configura el RecyclerView con su adaptador y layout manager.
-     */
     private fun setupRecyclerView() {
         planificadorAdapter = PlanificadorAdapter()
         binding.rvPlanificador.apply {
@@ -61,24 +58,34 @@ class PlanificadorFragment : Fragment() {
     }
 
     /**
-     * Configura los observadores para que la UI reaccione a los cambios de datos.
+     * Configura los observadores para que la UI reaccione a los cambios de datos del ViewModel.
+     * La lógica se ha simplificado para evitar conflictos y tener un único punto de verdad para cada estado.
      */
     private fun setupObservers() {
+        // 1. Observa el estado de carga
         viewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBar.isVisible = isLoading
             binding.fabRefresh.isEnabled = !isLoading
         }
 
+        // 2. Observa los datos del plan de comidas
         viewModel.mealPlan.observe(viewLifecycleOwner) { mealPlan ->
-            if (mealPlan != null) {
-                // Envía los datos del plan al adaptador para que los muestre.
-                planificadorAdapter.submitList(mealPlan.week)
-            } else {
-                viewModel.isLoading.value?.let {
-                    if (!it) {
-                        Toast.makeText(context, "Error al generar el plan de comidas", Toast.LENGTH_SHORT).show()
-                    }
-                }
+            // Si hay un plan, se actualiza la lista y se muestra el RecyclerView
+            val hasData = mealPlan != null
+            if(hasData) {
+                planificadorAdapter.submitList(mealPlan!!.week)
+            }
+            binding.rvPlanificador.isVisible = hasData
+        }
+
+        // 3. Observa los errores
+        viewModel.error.observe(viewLifecycleOwner) { errorMessage ->
+            // Si hay un error, se muestra el mensaje y se oculta el RecyclerView
+            val hasError = errorMessage != null
+            binding.tvError.isVisible = hasError
+            if(hasError) {
+                binding.tvError.text = errorMessage
+                binding.rvPlanificador.isVisible = false // Asegura que la lista no se muestre si hay un error
             }
         }
     }

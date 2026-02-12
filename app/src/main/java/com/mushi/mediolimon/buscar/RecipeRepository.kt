@@ -21,23 +21,19 @@ class RecipeRepository {
      * @param apiKey La clave de la API para la autenticación.
      * @param ingredients La cadena de texto con los ingredientes a buscar (ej: "tomato,cheese").
      * @param offset El punto a partir del cual se devuelven los resultados (para la paginación).
-     * @return Un objeto [RecipeResponse] si la llamada es exitosa, o null si ocurre una excepción.
+     * @return Un objeto [RecipeResponse] si la llamada es exitosa, o null si la respuesta es vacía.
+     * @throws Exception Si ocurre un error de red o de la API (ej: 401 Unauthorized).
      */
     suspend fun searchRecipesByIngredients(apiKey: String, ingredients: String?, offset: Int): RecipeResponse? {
-        // El bloque try-catch es fundamental para manejar errores de red (ej: sin conexión)
-        // o errores de la API (ej: clave inválida, cuota agotada) sin que la app se cierre.
-        return try {
-            apiService.searchRecipes(
-                apiKey = apiKey,
-                ingredients = ingredients,
-                offset = offset
-            )
-        } catch (e: Exception) {
-            // En una app más compleja, aquí se podría registrar el error en un sistema de logs
-            // o devolver un objeto de error más específico en lugar de simplemente null.
-            e.printStackTrace()
-            null
-        }
+        // Se elimina el bloque try-catch.
+        // Ahora, si Retrofit lanza una excepción (como HttpException por un error 401 o IOException por un fallo de red),
+        // esta no será capturada aquí, sino que se propagará hacia la capa que llamó a esta función (el ViewModel).
+        // De esta forma, el ViewModel puede saber que ocurrió un error y actuar en consecuencia.
+        return apiService.searchRecipes(
+            apiKey = apiKey,
+            ingredients = ingredients,
+            offset = offset
+        )
     }
 
     /**
@@ -45,14 +41,11 @@ class RecipeRepository {
      *
      * @param apiKey La clave de la API para la autenticación.
      * @param number El número de recetas aleatorias que se desean obtener.
-     * @return Un objeto [RandomRecipesResponse] si la llamada es exitosa, o null si ocurre una excepción.
+     * @return Un objeto [RandomRecipesResponse] si la llamada es exitosa, o null si la respuesta es vacía.
+     * @throws Exception Si ocurre un error de red o de la API.
      */
     suspend fun getRandomRecipes(apiKey: String, number: Int): RandomRecipesResponse? {
-        return try {
-            apiService.getRandomRecipes(apiKey = apiKey, number = number)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
-        }
+        // Al igual que en la función anterior, dejamos que la excepción se propague al ViewModel.
+        return apiService.getRandomRecipes(apiKey = apiKey, number = number)
     }
 }

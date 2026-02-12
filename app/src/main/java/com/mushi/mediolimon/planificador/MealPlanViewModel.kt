@@ -22,14 +22,14 @@ class MealPlanViewModel : ViewModel() {
 
     // Backing property para el plan de comidas. Es mutable para que el ViewModel pueda actualizar su valor.
     private val _mealPlan = MutableLiveData<MealPlan?>()
-    // LiveData público e inmutable. El Fragment lo observará para reaccionar a los cambios en los datos.
-    // Es nullable porque la petición a la API puede fallar.
     val mealPlan: LiveData<MealPlan?> = _mealPlan
 
     // Backing property para el estado de carga.
     private val _isLoading = MutableLiveData<Boolean>()
-    // LiveData público para que la UI pueda mostrar u ocultar un ProgressBar.
     val isLoading: LiveData<Boolean> = _isLoading
+
+    private val _error = MutableLiveData<String?>()
+    val error: LiveData<String?> = _error
 
     /**
      * Inicia la generación de un nuevo plan de comidas.
@@ -40,22 +40,28 @@ class MealPlanViewModel : ViewModel() {
      * @param diet La dieta a seguir (opcional).
      */
     fun generateMealPlan(apiKey: String, targetCalories: Int?, diet: String?) {
-        // Se utiliza viewModelScope para lanzar una corrutina. Esta corrutina está ligada al ciclo de vida
-        // del ViewModel, lo que significa que se cancelará automáticamente si el ViewModel es destruido.
-        // Esto previene fugas de memoria y trabajo innecesario.
         viewModelScope.launch {
-            // 1. Indicar que la carga ha comenzado. El Fragment observará este cambio y mostrará el ProgressBar.
-            _isLoading.value = true 
+            _isLoading.value = true
+            _error.value = null // Limpia el error anterior al iniciar una nueva petición
 
-            // 2. Llamar al repositorio (en un hilo secundario) para obtener los datos. 
-            // La función del repositorio es suspend, por lo que la corrutina se pausará aquí hasta que la API responda.
-            val plan = repository.generateMealPlan(apiKey, targetCalories, diet)
-            
-            // 3. Actualizar el LiveData con el resultado. Si la llamada falló, `plan` será null.
-            _mealPlan.value = plan
-            
-            // 4. Indicar que la carga ha terminado. El Fragment observará este cambio y ocultará el ProgressBar.
-            _isLoading.value = false 
+            try {
+                val plan = repository.generateMealPlan(apiKey, targetCalories, diet)
+                // Comprueba si el plan recibido es válido
+                if (plan != null && plan.week.values.any { it.meals.isNotEmpty() }) {
+                    _mealPlan.value = plan
+                } else {
+                    // Si el plan es nulo o está vacío, se considera un error
+                    _mealPlan.value = null // Limpia el plan antiguo
+                    _error.value = "A meal plan could not be generated. Please try again."
+                }
+            } catch (e: Exception) {
+                // Si ocurre una excepción (ej: sin red, error 401), se limpia el plan y se notifica el error
+                _mealPlan.value = null
+                _error.value = "The connection to the server has been lost. \n\nError: ${e.message}"
+            } finally {
+                // Se asegura de que el estado de carga siempre se desactive al final
+                _isLoading.value = false
+            }
         }
     }
 }
