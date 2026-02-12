@@ -5,23 +5,17 @@ import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.lifecycle.lifecycleScope
-import com.google.ai.client.generativeai.GenerativeModel
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import com.mushi.mediolimon.BuildConfig
 import com.mushi.mediolimon.databinding.ActivityGeneradorAiBinding
-import kotlinx.coroutines.launch
 
-/**
- * Activity dedicada a la generación de recetas mediante la IA de Gemini.
- * El usuario puede introducir hasta 4 ingredientes de forma dinámica.
- */
 class GeneradorAiActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityGeneradorAiBinding
+    private val viewModel: GeneradorAiViewModel by viewModels()
 
     private lateinit var ingredientLayouts: List<TextInputLayout>
     private lateinit var ingredientEditTexts: List<TextInputEditText>
@@ -35,6 +29,7 @@ class GeneradorAiActivity : AppCompatActivity() {
         initializeIngredientFields()
         setupActionBar()
         setupListeners()
+        setupObservers()
     }
 
     private fun initializeIngredientFields() {
@@ -62,7 +57,7 @@ class GeneradorAiActivity : AppCompatActivity() {
             val ingredients = getIngredientsFromFields()
             if (ingredients.isNotBlank()) {
                 hideKeyboard()
-                generateRecipe(ingredients)
+                viewModel.generateRecipe(ingredients)
             } else {
                 Toast.makeText(this, "Please enter at least one ingredient", Toast.LENGTH_SHORT).show()
             }
@@ -80,60 +75,28 @@ class GeneradorAiActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupObservers() {
+        viewModel.uiState.observe(this) { state ->
+            // Gestionar estado de carga
+            binding.progressBarAi.isVisible = state.isLoading
+            binding.btnGenerateAi.isEnabled = !state.isLoading
+            binding.btnAddIngredient.isEnabled = !state.isLoading
+
+            // Mostrar receta generada o error
+            val recipeText = state.generatedRecipe ?: state.error
+            binding.tvGeneratedRecipe.text = recipeText
+
+            // La vista de texto solo es visible si tiene contenido (receta o error)
+            binding.tvGeneratedRecipe.isVisible = recipeText != null
+        }
+    }
+
     private fun getIngredientsFromFields(): String {
         return ingredientEditTexts
             .take(visibleIngredientCount)
             .map { it.text.toString().trim() }
             .filter { it.isNotBlank() }
             .joinToString(separator = ", ")
-    }
-
-    private fun generateRecipe(ingredients: String) {
-        lifecycleScope.launch {
-            setLoadingState(true)
-            try {
-                val generativeModel = GenerativeModel(
-                    modelName = "gemini-3-flash-preview",
-                    apiKey = BuildConfig.GEMINI_API_KEY
-                )
-
-                // English prompt for the AI model.
-                val prompt = "Create a recipe that uses only the following ingredients: $ingredients. " +
-                        "You can only add basic and common ingredients like oil, salt, pepper, spices, and water if they are strictly necessary. " +
-                        "The recipe must have a clear title, a final list of ingredients, and well-detailed preparation steps."
-
-                val response = generativeModel.generateContent(prompt)
-
-                // Formatea la respuesta para eliminar caracteres de Markdown antes de mostrarla.
-                binding.tvGeneratedRecipe.text = formatGeminiResponse(response.text)
-
-            } catch (e: Exception) {
-                e.printStackTrace()
-                Toast.makeText(this@GeneradorAiActivity, "Error generating recipe: ${e.message}", Toast.LENGTH_LONG).show()
-                binding.tvGeneratedRecipe.text = "Could not generate recipe. Check the API key and your connection."
-            }
-            setLoadingState(false)
-        }
-    }
-
-    /**
-     * Limpia el texto de respuesta de Gemini, eliminando los caracteres de formato Markdown.
-     * @param rawText El texto en bruto devuelto por la API.
-     * @return El texto formateado y limpio.
-     */
-    private fun formatGeminiResponse(rawText: String?): String {
-        return rawText
-            ?.replace("## ", "") // Elimina los marcadores de encabezado H2
-            ?.replace("#", "")    // Elimina los marcadores de encabezado H1
-            ?.replace("**", "")   // Elimina los marcadores de negrita
-            ?.replace("* ", "• ") // Reemplaza los asteriscos de las listas por un punto
-            ?.trim() ?: "Could not generate recipe. Please try again."
-    }
-
-    private fun setLoadingState(isLoading: Boolean) {
-        binding.progressBarAi.isVisible = isLoading
-        binding.btnGenerateAi.isEnabled = !isLoading
-        binding.btnAddIngredient.isEnabled = !isLoading
     }
 
     private fun hideKeyboard() {
