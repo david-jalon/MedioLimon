@@ -86,8 +86,8 @@ class GeneradorAiActivity : AppCompatActivity() {
             val recipeText = state.generatedRecipe ?: state.error
             binding.tvGeneratedRecipe.text = recipeText
 
-            // La vista de texto solo es visible si tiene contenido (receta o error)
-            binding.tvGeneratedRecipe.isVisible = recipeText != null
+            // El contenedor de la receta solo es visible si tiene contenido (receta o error)
+            binding.cvRecipeResult.isVisible = recipeText != null
         }
     }
 

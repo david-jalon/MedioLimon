@@ -34,4 +34,12 @@
     <style name="ShapeAppearance.MedioLimon.Medium" parent="ShapeAppearance.Material3.MediumComponent">
         <item name="cornerSize">24dp</item>
     </style>
+
+    <!-- Estilo para el Bottom Navigation con bordes superiores redondeados -->
+    <style name="ShapeAppearance.MedioLimon.BottomNav" parent="">
+        <item name="cornerSizeTopLeft">32dp</item>
+        <item name="cornerSizeTopRight">32dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+    </style>
 </resources>
