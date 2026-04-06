@@ -34,9 +34,39 @@ class BuscarFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupTitle()
         setupRecyclerView()
         setupListeners()
         setupObservers()
+    }
+
+    private fun setupTitle() {
+        val fullText = "What are we cooking today?"
+        val wordToStyle = "today?"
+        val spannable = android.text.SpannableString(fullText)
+        
+        val startIndex = fullText.indexOf("today")
+        if (startIndex != -1) {
+            val endIndex = fullText.length // Hasta el final de la cadena
+            
+            // Color Verde
+            spannable.setSpan(
+                android.text.style.ForegroundColorSpan(androidx.core.content.ContextCompat.getColor(requireContext(), com.mushi.mediolimon.R.color.primary)),
+                startIndex,
+                endIndex,
+                android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            
+            // Cursiva (Italic)
+            spannable.setSpan(
+                android.text.style.StyleSpan(android.graphics.Typeface.ITALIC),
+                startIndex,
+                endIndex,
+                android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+        
+        binding.tvTitle.text = spannable
     }
 
     private fun setupRecyclerView() {
