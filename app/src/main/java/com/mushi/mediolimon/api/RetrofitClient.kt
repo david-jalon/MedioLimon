@@ -1,43 +1,38 @@
 package com.mushi.mediolimon.api
 
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 /**
  * Objeto singleton que gestiona la configuración y creación del cliente de Retrofit.
- * Al ser un `object`, Kotlin asegura que solo existirá una única instancia de RetrofitClient en toda la aplicación (patrón Singleton).
- * Esto es ideal para centralizar la configuración de red y reutilizar la misma instancia de Retrofit, 
- * lo cual es muy eficiente en términos de rendimiento y memoria.
  */
 object RetrofitClient {
-    // La URL base de la API. Todas las peticiones definidas en SpoonacularApiService serán relativas a esta URL.
     private const val BASE_URL = "https://api.spoonacular.com/"
 
     /**
-     * Creación de la instancia de Retrofit usando inicialización perezosa (`lazy`).
-     * La delegación `by lazy` significa que el bloque de código para crear el objeto Retrofit
-     * solo se ejecutará la primera vez que se acceda a la propiedad `retrofit`.
-     * En las siguientes llamadas, se devolverá la instancia ya creada. Esto optimiza el arranque de la app.
+     * Configuramos un cliente OkHttp personalizado para aumentar los tiempos de espera.
+     * Esto evita los errores de "timeout" cuando la API tarda en procesar peticiones pesadas
+     * como el planificador de comidas semanal.
      */
-    private val retrofit: Retrofit by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL) // 1. Se establece la URL base para todas las peticiones.
-            // 2. Se añade un convertidor. Retrofit necesita saber cómo procesar el JSON que recibe de la API.
-            //    `GsonConverterFactory` utiliza la librería GSON de Google para mapear automáticamente
-            //    el JSON a nuestras clases de datos Kotlin (ej: Recipe, MealPlan, etc.).
-            .addConverterFactory(GsonConverterFactory.create())
-            // 3. Se construye el objeto Retrofit.
+    private val okHttpClient: OkHttpClient by lazy {
+        OkHttpClient.Builder()
+            .connectTimeout(60, TimeUnit.SECONDS) // Aumentamos a 60 por seguridad
+            .readTimeout(60, TimeUnit.SECONDS)
+            .writeTimeout(60, TimeUnit.SECONDS)
+            .retryOnConnectionFailure(true) // Reintentar si falla la conexión
             .build()
     }
 
-    /**
-     * Proporciona la implementación concreta de la interfaz [SpoonacularApiService].
-     * Retrofit toma nuestra interfaz y genera dinámicamente una clase que implementa todos los métodos (ej: searchRecipes).
-     * También usa inicialización perezosa por las mismas razones de eficiencia.
-     * Los repositorios obtendrán el servicio a través de esta propiedad.
-     * 
-     * Uso: `RetrofitClient.apiService.searchRecipes(...)`
-     */
+    private val retrofit: Retrofit by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(okHttpClient) // Asignamos el cliente con los nuevos timeouts
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
     val apiService: SpoonacularApiService by lazy {
         retrofit.create(SpoonacularApiService::class.java)
     }

@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.mushi.mediolimon.buscar.RecipeDetailActivity">
+    tools:context=".buscar.RecipeDetailActivity">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="33dp"
-        tools:layout_editor_absoluteY="0dp">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -21,8 +19,8 @@
                 android:id="@+id/recipe_image_detail"
                 android:layout_width="match_parent"
                 android:layout_height="220dp"
-                android:contentDescription="@string/recipe_image_desc"
-                android:scaleType="centerCrop" />
+                android:scaleType="centerCrop"
+                android:contentDescription="Recipe image" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -37,13 +35,13 @@
                     android:layout_marginBottom="16dp"
                     android:textSize="24sp"
                     android:textStyle="bold"
-                    tools:text="Recipe's Name" />
+                    tools:text="Nombre de la Receta" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:text="Ingredients"
+                    android:text="Ingredientes"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -52,15 +50,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
-                    android:lineSpacingExtra="4dp"
                     android:textSize="16sp"
-                    tools:text="- 2 tazas de harina\n- 1 taza de azúcar\n- 3 huevos" />
+                    android:lineSpacingExtra="4dp"
+                    tools:text="- Ingrediente 1\n- Ingrediente 2" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:text="Instructions"
+                    android:text="Instrucciones"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -68,9 +66,9 @@
                     android:id="@+id/recipe_instructions"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:lineSpacingExtra="4dp"
                     android:textSize="16sp"
-                    tools:text="Aquí irán las instrucciones paso a paso" />
+                    android:lineSpacingExtra="4dp"
+                    tools:text="Paso 1: Preparar...\nPaso 2: Cocinar..." />
 
             </LinearLayout>
         </LinearLayout>
@@ -82,10 +80,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:contentDescription="Añadir ingredientes a la lista de la compra"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/add_to_favorites"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_shopping_cart" />
 
@@ -93,13 +88,9 @@
         android:id="@+id/add_to_favorites"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="150dp"
-        android:layout_marginRight="16dp"
-        android:clickable="true"
-        android:contentDescription="Add to favorites"
-        android:focusable="true"
+        android:layout_margin="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_favorite" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

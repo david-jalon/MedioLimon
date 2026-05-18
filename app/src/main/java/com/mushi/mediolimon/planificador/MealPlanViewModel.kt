@@ -46,8 +46,12 @@ class MealPlanViewModel : ViewModel() {
 
             try {
                 val plan = repository.generateMealPlan(apiKey, targetCalories, diet)
-                // Comprueba si el plan recibido es válido
-                if (plan != null && plan.week.values.any { it.meals.isNotEmpty() }) {
+                
+                // Validación robusta: el plan es válido si tiene semana con datos O si tiene comidas directas (formato diario)
+                val isWeekValid = plan?.week?.values?.any { it.meals.isNotEmpty() } == true
+                val isDayValid = plan?.meals?.isNotEmpty() == true
+
+                if (isWeekValid || isDayValid) {
                     _mealPlan.value = plan
                 } else {
                     // Si el plan es nulo o está vacío, se considera un error

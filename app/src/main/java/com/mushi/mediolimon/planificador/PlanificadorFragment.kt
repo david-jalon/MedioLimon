@@ -73,7 +73,7 @@ class PlanificadorFragment : Fragment() {
             // Si hay un plan, se actualiza la lista y se muestra el RecyclerView
             val hasData = mealPlan != null
             if(hasData) {
-                planificadorAdapter.submitList(mealPlan!!.week)
+                planificadorAdapter.submitMealPlan(mealPlan!!)
             }
             binding.rvPlanificador.isVisible = hasData
         }
