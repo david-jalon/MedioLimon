@@ -111,7 +111,7 @@ class BuscarFragment : Fragment() {
 
             // 2. Gestionar estado de carga de paginación
             binding.loadMoreProgress.isVisible = state.isLoadingMore
-            binding.btnLoadMore.text = if (state.isLoadingMore) "" else "Cargar más recetas"
+            binding.btnLoadMore.text = if (state.isLoadingMore) "" else "More recipes"
             binding.btnLoadMore.isEnabled = !state.isLoadingMore
 
             // 3. Gestionar visibilidad del botón "Cargar más"

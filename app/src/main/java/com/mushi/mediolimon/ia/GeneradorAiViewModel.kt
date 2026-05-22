@@ -40,7 +40,7 @@ class GeneradorAiViewModel : ViewModel() {
                 val response = generativeModel.generateContent(prompt)
                 
                 if (response.text.isNullOrBlank()) {
-                     _uiState.postValue(GeneradorAiUiState(error = "La API no devolvió una receta. Inténtalo de nuevo."))
+                     _uiState.postValue(GeneradorAiUiState(error = "The API did not return a recipe. Please try again."))
                 } else {
                      val formattedText = formatGeminiResponse(response.text)
                      // Actualiza el estado con la receta generada

@@ -47,7 +47,7 @@ class RecipeDetailActivity : AppCompatActivity() {
         val imageUrl = intent.getStringExtra(EXTRA_RECIPE_IMAGE_URL)
 
         if (recipeId == -1) {
-            Toast.makeText(this, "Error: No se encontró la receta", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Error: Recipe not found", Toast.LENGTH_LONG).show()
             finish()
             return
         }
@@ -67,10 +67,10 @@ class RecipeDetailActivity : AppCompatActivity() {
                     withContext(Dispatchers.IO) {
                         ingredienteDao.insertAll(ingredientes)
                     }
-                    Toast.makeText(this@RecipeDetailActivity, "Ingredientes añadidos a la lista", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@RecipeDetailActivity, "Ingredients added to the list", Toast.LENGTH_SHORT).show()
                 }
             } else {
-                Toast.makeText(this@RecipeDetailActivity, "No hay ingredientes para añadir", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@RecipeDetailActivity, "There are no ingredients to add", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -87,7 +87,7 @@ class RecipeDetailActivity : AppCompatActivity() {
                 withContext(Dispatchers.IO) {
                     recetaGuardadaDao.insert(receta)
                 }
-                Toast.makeText(this@RecipeDetailActivity, "Receta añadida a favoritos", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@RecipeDetailActivity, "Recipe added to favorites", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -114,12 +114,12 @@ class RecipeDetailActivity : AppCompatActivity() {
                 if (response.instructions != null) {
                     instructionsTextView.text = Html.fromHtml(response.instructions, Html.FROM_HTML_MODE_COMPACT)
                 } else {
-                    instructionsTextView.text = "No hay instrucciones disponibles."
+                    instructionsTextView.text = "No instructions are available."
                 }
 
             } catch (e: Exception) {
-                Log.e("API_CALL_DETAIL", "Error al obtener detalles: ${e.message}", e)
-                Toast.makeText(this@RecipeDetailActivity, "Error al cargar instrucciones: ${e.message}", Toast.LENGTH_LONG).show()
+                Log.e("API_CALL_DETAIL", "Error retrieving details: ${e.message}", e)
+                Toast.makeText(this@RecipeDetailActivity, "Error loading instructions: ${e.message}", Toast.LENGTH_LONG).show()
             }
         }
     }

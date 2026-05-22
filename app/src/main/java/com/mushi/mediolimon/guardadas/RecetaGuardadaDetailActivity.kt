@@ -59,7 +59,7 @@ class RecetaGuardadaDetailActivity : AppCompatActivity() {
         receta.instructions?.let {
             instructionsTextView.text = Html.fromHtml(it, Html.FROM_HTML_MODE_COMPACT)
         } ?: run {
-            instructionsTextView.text = "No hay instrucciones disponibles."
+            instructionsTextView.text = "No instructions are available."
         }
 
         val fab = findViewById<FloatingActionButton>(R.id.add_to_shopping_list_fab)
@@ -71,10 +71,10 @@ class RecetaGuardadaDetailActivity : AppCompatActivity() {
                         withContext(Dispatchers.IO) {
                             AppDatabase.getDatabase(applicationContext).IngredienteDao().insertAll(ingredientesDb)
                         }
-                        Toast.makeText(this@RecetaGuardadaDetailActivity, "Ingredientes añadidos a la lista", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@RecetaGuardadaDetailActivity, "Ingredients added to the list", Toast.LENGTH_SHORT).show()
                     }
                 } else {
-                    Toast.makeText(this@RecetaGuardadaDetailActivity, "No hay ingredientes para añadir", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@RecetaGuardadaDetailActivity, "There are no ingredients to add", Toast.LENGTH_SHORT).show()
                 }
             }
         }

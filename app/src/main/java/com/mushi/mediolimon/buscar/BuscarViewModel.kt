@@ -49,7 +49,7 @@ class BuscarViewModel : ViewModel() {
                 if (recipes.isNotEmpty()) {
                     _uiState.value = BuscarUiState(recipes = recipes)
                 } else {
-                    _uiState.value = BuscarUiState(error = "No se encontraron recetas aleatorias.")
+                    _uiState.value = BuscarUiState(error = "No found recipes.")
                 }
             } catch (e: Exception) {
                 _uiState.value = BuscarUiState(error = "The connection to the server has been lost. \nError: ${e.message}")
@@ -102,14 +102,14 @@ class BuscarViewModel : ViewModel() {
                         isLoadingMore = false,
                         canLoadMore = false, // No hay más resultados
                         // Mantiene las recetas actuales si las hay, si no, muestra error
-                        error = if (_uiState.value?.recipes.isNullOrEmpty()) "No se encontraron recetas para '$currentIngredient'." else null 
+                        error = if (_uiState.value?.recipes.isNullOrEmpty()) "No recipes were found for '$currentIngredient'." else null
                     )
                 }
             } catch (e: Exception) {
                 _uiState.value = uiState.value?.copy(
                     isLoading = false, 
                     isLoadingMore = false, 
-                    error = "Error de red: ${e.message}"
+                    error = "Network error: ${e.message}"
                 )
             }
         }
