@@ -7,6 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
+import androidx.core.content.ContextCompat
+import com.mushi.mediolimon.R
 import com.mushi.mediolimon.data.database.entities.Ingrediente
 import com.mushi.mediolimon.databinding.FragmentCompraBinding
 
@@ -49,6 +55,8 @@ class CompraFragment : Fragment() {
         binding.rvIngredientes.adapter = adapter
         binding.rvIngredientes.layoutManager = LinearLayoutManager(requireContext())
 
+        setupTitle()
+
         // Observa los cambios en la lista de ingredientes.
         compraViewModel.allIngredientes.observe(viewLifecycleOwner) { ingredientes ->
             ingredientes?.let { 
@@ -64,9 +72,29 @@ class CompraFragment : Fragment() {
             if (nombreIngrediente.isNotBlank()) {
                 val ingrediente = Ingrediente(nombre = nombreIngrediente)
                 compraViewModel.insert(ingrediente)
-                binding.etNuevoIngrediente.text.clear()
+                binding.etNuevoIngrediente.setText("")
             }
         }
+    }
+
+    private fun setupTitle() {
+        val fullText = "Shopping List"
+        val spannable = SpannableString(fullText)
+        val lastWordStart = fullText.lastIndexOf(" ") + 1
+
+        spannable.setSpan(
+            ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.primary)),
+            lastWordStart,
+            fullText.length,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        spannable.setSpan(
+            StyleSpan(android.graphics.Typeface.ITALIC),
+            lastWordStart,
+            fullText.length,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        binding.tvTitleCompra.text = spannable
     }
 
     /**

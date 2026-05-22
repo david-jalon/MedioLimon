@@ -1,51 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/surface"
     tools:context=".compra.CompraFragment">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cvAddIngredients"
-        android:layout_width="match_parent"
+    <!-- Cabecera -->
+    <TextView
+        android:id="@+id/tv_title_compra"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="16dp"
-        app:cardBackgroundColor="@color/onBackground"
-        android:layout_margin="6dp"
-        >
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="20dp"
+        android:text="Shopping list"
+        android:textColor="#1D1B20"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+    <TextView
+        android:id="@+id/tv_subtitle_compra"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Organize your fresh ingredients for the week."
+        android:textColor="#49454F"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="@id/tv_title_compra"
+        app:layout_constraintStart_toStartOf="@id/tv_title_compra"
+        app:layout_constraintTop_toBottomOf="@id/tv_title_compra" />
 
-            <EditText
-                android:id="@+id/etNuevoIngrediente"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:hint="Add an ingredient"
-                android:layout_margin="6dp"
-                android:padding="8dp"
-                android:background="@color/onBackground"
-                android:layout_toStartOf="@+id/btnAnadir"/>
+    <!-- Barra de entrada de ingrediente + Botón Añadir -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_nuevo_ingrediente"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        app:boxStrokeWidth="0dp"
+        app:boxStrokeWidthFocused="0dp"
+        app:hintEnabled="false"
+        app:layout_constraintEnd_toStartOf="@+id/btnAnadir"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_subtitle_compra"
+        app:startIconDrawable="@drawable/ic_add"
+        app:startIconTint="#49454F">
 
-            <Button
-                android:id="@+id/btnAnadir"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Add"
-                android:layout_margin="6dp"
-                />
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etNuevoIngrediente"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:background="@drawable/bg_search_bar"
+            android:gravity="center_vertical"
+            android:hint="Add an ingredient"
+            android:inputType="text"
+            android:paddingStart="48dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="0dp"
+            android:paddingBottom="0dp"
+            android:textColor="#1D1B20"
+            android:textSize="16sp" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-        </androidx.appcompat.widget.LinearLayoutCompat>
-    </androidx.cardview.widget.CardView>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnAnadir"
+        android:layout_width="wrap_content"
+        android:layout_height="52dp"
+        android:layout_marginEnd="16dp"
+        android:text="Add"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        android:textSize="14sp"
+        app:backgroundTint="@color/primary"
+        app:cornerRadius="26dp"
+        app:layout_constraintBottom_toBottomOf="@+id/til_nuevo_ingrediente"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/til_nuevo_ingrediente" />
 
+    <!-- Lista de Ingredientes -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvIngredientes"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/cvAddIngredients"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:clipToPadding="false"
+        android:paddingBottom="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/til_nuevo_ingrediente"
         tools:listitem="@layout/item_ingrediente" />
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
