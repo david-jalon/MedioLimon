@@ -1,14 +1,21 @@
 package com.mushi.mediolimon.planificador
 
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.mushi.mediolimon.BuildConfig
+import com.mushi.mediolimon.R
 import com.mushi.mediolimon.databinding.FragmentPlanificadorBinding
 
 /**
@@ -33,6 +40,7 @@ class PlanificadorFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupTitle()
         setupRecyclerView()
         setupListeners()
         setupObservers()
@@ -41,6 +49,35 @@ class PlanificadorFragment : Fragment() {
         if (viewModel.mealPlan.value == null) {
             generateNewMealPlan()
         }
+    }
+
+    private fun setupTitle() {
+        val fullText = "Weekly Planner"
+        val wordToStyle = "Planner"
+        val spannable = SpannableString(fullText)
+        
+        val startIndex = fullText.indexOf(wordToStyle)
+        if (startIndex != -1) {
+            val endIndex = fullText.length
+            
+            // Color Verde
+            spannable.setSpan(
+                ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.primary)),
+                startIndex,
+                endIndex,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            
+            // Cursiva (Italic)
+            spannable.setSpan(
+                StyleSpan(Typeface.ITALIC),
+                startIndex,
+                endIndex,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+        
+        binding.tvTitlePlanificador.text = spannable
     }
 
     private fun setupRecyclerView() {
