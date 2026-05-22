@@ -12,30 +12,30 @@ class MealPlanRepository {
 
     suspend fun generateMealPlan(apiKey: String, targetCalories: Int?, diet: String?): MealPlan? {
         return try {
+            // Intentamos pedir la semana de nuevo, si falla saltará al catch con los datos de prueba
             apiService.generateMealPlan(
                 apiKey = apiKey,
-                timeFrame = "day",
+                timeFrame = "week", 
                 targetCalories = targetCalories,
                 diet = diet
             )
         } catch (e: Exception) {
-            // Si hay un error 502 o cualquier fallo, devolvemos un plan de prueba
-            // para que el usuario pueda ver la interfaz diseñada.
-            getMockMealPlan()
+            getMockWeeklyPlan()
         }
     }
 
-    private fun getMockMealPlan(): MealPlan {
-        val mockMeals = listOf(
-            Meal(1, "Vegetarian Omelette", "jpg", 15, 2, ""),
-            Meal(2, "Quinoa Salad with Avocado", "jpg", 20, 1, ""),
-            Meal(3, "Lentil Soup", "jpg", 40, 4, "")
-        )
-        val mockNutrients = Nutrients(1850.0, 75.0, 50.0, 210.0)
-        
-        return MealPlan(
-            meals = mockMeals,
-            nutrients = mockNutrients
-        )
+    private fun getMockWeeklyPlan(): MealPlan {
+        val days = listOf("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday")
+        val weekMap = days.associateWith { day ->
+            DayPlan(
+                meals = listOf(
+                    Meal(1, "Roasted Plum Oatmeal ($day)", "jpg", 45, 2, ""),
+                    Meal(2, "Fig and Goat Cheese Pizza", "jpg", 15, 1, ""),
+                    Meal(3, "The Best Of England Salad", "jpg", 45, 4, "")
+                ),
+                nutrients = Nutrients(2000.0, 80.0, 60.0, 250.0)
+            )
+        }
+        return MealPlan(week = weekMap)
     }
 }
